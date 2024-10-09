@@ -22,19 +22,9 @@ contract Client is ClientBase, Ownable, IClient {
         int24 tick;
     }
 
-    constructor(
-        CambrianRouter router
-    )
+    constructor(CambrianRouter router)
         Ownable(msg.sender)
-        ClientBase(
-            router,
-            Cambrian.Query(
-                1,
-                0x4585FE77225b41b697C938B018E2Ac67Ac5a20c0,
-                "0xFC4321",
-                "last 20"
-            )
-        )
+        ClientBase(router, Cambrian.Query(1, 0x4585FE77225b41b697C938B018E2Ac67Ac5a20c0, "0xFC4321", "last 20"))
     {}
 
     function executeQuery() external onlyOwner returns (bytes32) {
@@ -43,19 +33,12 @@ contract Client is ClientBase, Ownable, IClient {
         return messageId;
     }
 
-    function handleSuccess(
-        bytes32 messageId,
-        bytes memory data,
-        Report calldata report
-    ) external override {
+    function handleSuccess(bytes32 messageId, bytes memory data, Report calldata report) external override {
         SwapEvent[] memory events = abi.decode(data, (SwapEvent[]));
         // to be overrided by custom app
     }
 
-    function handleStatus(
-        bytes32 messageId,
-        Report calldata report
-    ) external override {
+    function handleStatus(bytes32 messageId, Report calldata report) external override {
         // to be overrided by custom app
         // handle errors also
     }

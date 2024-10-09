@@ -18,12 +18,7 @@ contract CambrianRouter {
         bytes32 messageId = keccak256(abi.encodePacked(query.query));
 
         emit RequestQuery(
-            msg.sender,
-            messageId,
-            query.chainId,
-            query.contractAddress,
-            query.eventIdentifier,
-            query.query
+            msg.sender, messageId, query.chainId, query.contractAddress, query.eventIdentifier, query.query
         );
 
         return messageId;
