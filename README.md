@@ -1,66 +1,35 @@
-## Foundry
+# Cambrian Contracts
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## How to run the project
 
-Foundry consists of:
+To test the project, you can run the following command:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+make test
 ```
 
-### Test
+You can change the chain where the following commands are executed
+by setting the `RPC_URL` environment variable. By default anvil is used.
 
-```shell
-$ forge test
+To start anvil run the following command on a separate shell:
+
+```bash
+make anvil-start
 ```
 
-### Format
+Note that you also need to set the `PRIVATE_KEY` environment variable.
 
-```shell
-$ forge fmt
+To deploy the Cambrian Router, you can run the following command:
+
+```bash
+make deploy-router
 ```
 
-### Gas Snapshots
+To deploy the Test Client you can run the following command:
 
-```shell
-$ forge snapshot
+```bash
+make deploy-test-client ROUTER_ADDRESS=<router_address>
 ```
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Where `<router_address>` is the address of the Cambrian Router
+(which is output when running make deploy-router).
