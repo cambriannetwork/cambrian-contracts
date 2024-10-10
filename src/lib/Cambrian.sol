@@ -9,4 +9,13 @@ library Cambrian {
         string eventIdentifier;
         string query;
     }
+
+    struct Event {
+        uint64 blockNumber;
+        bytes transaction;
+        address from;
+        address to;
+        address contractAddress;
+        bytes data;
+    }
 }

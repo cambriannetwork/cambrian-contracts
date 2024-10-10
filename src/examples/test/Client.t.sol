@@ -6,6 +6,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {Client} from "../Client.sol";
 import {CambrianRouter} from "../../lib/CambrianRouter.sol";
 import {ClientBase} from "../../lib/ClientBase.sol";
+import {Cambrian} from "../../lib/Cambrian.sol";
 
 contract ClientTest is Test {
     Client public client;
@@ -31,14 +32,21 @@ contract ClientTest is Test {
             tick: int24(0x00000000000000000000000000000000000000000000000000000000000306dd)
         });
 
-        Client.SwapEvent[] memory events = new Client.SwapEvent[](2);
-        events[0] = swapEvent;
-        events[1] = swapEvent;
+        bytes memory eventData = abi.encode(swapEvent);
 
-        bytes memory data = abi.encode(events);
+        Cambrian.Event memory cambrianEvent = Cambrian.Event({
+            blockNumber: 0,
+            transaction: "0x00",
+            from: address(0xE37e799D5077682FA0a244D46E5649F71457BD09),
+            to: address(0x4585FE77225b41b697C938B018E2Ac67Ac5a20c0),
+            contractAddress: address(0x4585FE77225b41b697C938B018E2Ac67Ac5a20c0),
+            data: eventData
+        });
 
-        console.logBytes(data);
+        Cambrian.Event[] memory events = new Cambrian.Event[](2);
+        events[0] = cambrianEvent;
+        events[1] = cambrianEvent;
 
-        client.handleSuccess(messageId, data, report);
+        client.handleSuccess(messageId, events, report);
     }
 }

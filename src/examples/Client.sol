@@ -33,9 +33,15 @@ contract Client is ClientBase, Ownable, IClient {
         return messageId;
     }
 
-    function handleSuccess(bytes32 messageId, bytes memory data, Report calldata report) external override {
-        SwapEvent[] memory events = abi.decode(data, (SwapEvent[]));
+    function handleSuccess(bytes32 messageId, Cambrian.Event[] memory events, Report calldata report)
+        external
+        override
+    {
         // to be overrided by custom app
+        // e.g loop through events and do something
+        for (uint256 i = 0; i < events.length; i++) {
+            SwapEvent memory swapEvent = abi.decode(events[i].data, (SwapEvent));
+        }
     }
 
     function handleStatus(bytes32 messageId, Report calldata report) external override {
