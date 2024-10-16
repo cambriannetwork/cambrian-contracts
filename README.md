@@ -2,12 +2,6 @@
 
 ## How to run the project
 
-To test the project, you can run the following command:
-
-```bash
-make test
-```
-
 You can change the chain where the following commands are executed
 by setting the `RPC_URL` environment variable in the `.env` file.
 Anvil is used by default.

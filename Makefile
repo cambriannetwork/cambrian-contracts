@@ -5,12 +5,7 @@ KEYSTORE_PATH:=./anvil.keystore.json
 
 # Default target
 .PHONY: all
-all: clean build test
-
-# Target to run tests
-.PHONY: test
-test:
-	@forge test
+all: clean build
 
 # Target to build the project
 .PHONY: build
@@ -35,17 +30,3 @@ deploy-router: build
 	    --rpc-url $(RPC_URL) \
 		--keystore $(KEYSTORE_PATH) \
 		--broadcast
-
-# Target to deploy the test client
-.PHONY: deploy-test-client
-deploy-test-client: build
-	@if [ -z "$(ROUTER_ADDRESS)" ]; then \
-        echo "ROUTER_ADDRESS is not set"; \
-        exit 1; \
-    fi;
-	@forge script src/examples/script/Client.s.sol \
-	    --rpc-url $(RPC_URL) \
-		--keystore $(KEYSTORE_PATH) \
-		--broadcast \
-		--sig "run(address)" \
-		$(ROUTER_ADDRESS)
