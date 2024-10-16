@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
-import {CambrianRouter} from "../src/Cambrian.sol";
+import {CambrianRouter} from "../src/CambrianRouter.sol";
 
 contract RouterScript is Script {
     CambrianRouter public router;
