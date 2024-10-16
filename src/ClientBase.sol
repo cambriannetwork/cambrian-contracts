@@ -12,10 +12,7 @@ abstract contract ClientBase {
         query = _query;
     }
 
-    function execute(
-        uint64 startBlock,
-        uint64 endBlock
-    ) public returns (bytes32) {
+    function execute(uint64 startBlock, uint64 endBlock) public returns (bytes32) {
         return router.execute(query, startBlock, endBlock);
     }
 }
