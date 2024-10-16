@@ -21,17 +21,11 @@ struct Status {
 }
 
 event Request(
-    address indexed senderContract,
-    uint256 indexed messageId,
-    uint64 startBlock,
-    uint64 endBlock,
-    string query
+    address indexed senderContract, uint256 indexed messageId, uint64 startBlock, uint64 endBlock, string query
 );
 
 interface IClient {
-
     function handleSuccess(Response memory response) external;
 
     function handleStatus(Status calldata status) external;
-
 }
