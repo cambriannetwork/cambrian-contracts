@@ -6,11 +6,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 
 contract CambrianRouter is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event Request(
-        address indexed senderContract,
-        uint256 indexed messageId,
-        uint64 startBlock,
-        uint64 endBlock,
-        string query
+        address indexed senderContract, uint256 indexed messageId, uint64 startBlock, uint64 endBlock, string query
     );
 
     mapping(address => uint256) public nonce;
@@ -28,15 +24,9 @@ contract CambrianRouter is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         __UUPSUpgradeable_init();
     }
 
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal override onlyOwner {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
-    function execute(
-        string memory query,
-        uint64 startBlock,
-        uint64 endBlock
-    ) public returns (uint256) {
+    function execute(string memory query, uint64 startBlock, uint64 endBlock) public returns (uint256) {
         uint256 messageId = nonce[msg.sender]++;
 
         emit Request(msg.sender, messageId, startBlock, endBlock, query);
