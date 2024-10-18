@@ -2,12 +2,15 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
+import {stdJson} from "forge-std/StdJson.sol";
 import {CambrianRouter} from "../src/CambrianRouter.sol";
+import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import {ITransparentUpgradeableProxy, TransparentUpgradeableProxy} from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+
 import "@openzeppelin/contracts/utils/Strings.sol";
-import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 contract UpgraderRouterScript is Script {
-    CambrianRouter public router;
+    using stdJson for string;
 
     function setUp() public {}
 
@@ -19,20 +22,48 @@ contract UpgraderRouterScript is Script {
             ".json"
         );
 
-        // vm.readJson(outputFile);
+        string memory outputFileJson = vm.readFile(outputFile);
+
+        ProxyAdmin proxyAdmin = ProxyAdmin(
+            outputFileJson.readAddress(".proxyAdminAddress")
+        );
+
+        ITransparentUpgradeableProxy transparentProxy = ITransparentUpgradeableProxy(
+                payable(outputFileJson.readAddress(".routerProxyAddress"))
+            );
 
         vm.startBroadcast();
 
-        router = new CambrianRouter();
+        console.log(msg.sender);
+
+        CambrianRouter cambrianRouterImplementation = new CambrianRouter();
+
+        proxyAdmin.upgradeAndCall(
+            transparentProxy,
+            address(new CambrianRouter()),
+            ""
+        );
 
         vm.stopBroadcast();
 
-        string memory routerAddress = "";
+        string memory outputJson = "";
 
         string memory out = vm.serializeAddress(
-            routerAddress,
-            "routerAddress",
-            address(router)
+            outputJson,
+            "routerProxyAddress",
+            address(transparentProxy)
+        );
+
+        out = vm.serializeAddress(
+            outputJson,
+            "routerImplementationAddress",
+            address(cambrianRouterImplementation)
+        );
+
+        out = vm.serializeAddress(
+            outputJson,
+            "proxyAdminAddress",
+            address(proxyAdmin)
         );
 
         vm.writeJson(out, outputFile);
