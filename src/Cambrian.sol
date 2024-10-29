@@ -9,15 +9,7 @@ struct Log {
 }
 
 interface IClient {
-    function handleSuccess(
-        uint256 messageId,
-        bytes memory data,
-        Log[] calldata logs
-    ) external;
+    function handleSuccess(uint256 messageId, bytes memory data, Log[] calldata logs) external;
 
-    function handleStatus(
-        uint256 messageId,
-        uint8 status,
-        string calldata message
-    ) external;
+    function handleStatus(uint256 messageId, uint8 status, string calldata message) external;
 }
