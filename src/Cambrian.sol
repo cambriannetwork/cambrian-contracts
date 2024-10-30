@@ -8,12 +8,6 @@ struct Log {
     address contractAddress;
 }
 
-event Request(
-    address indexed senderContract, uint256 indexed messageId, uint64 startBlock, uint64 endBlock, string query
-);
-
-event Register(address indexed senderContract, string query);
-
 interface IClient {
     function handleSuccess(uint256 messageId, bytes memory data, Log[] calldata logs) external;
 
