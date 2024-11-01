@@ -6,6 +6,8 @@ import {Vm} from "forge-std/Vm.sol";
 import {IClient, Log} from "../src//Cambrian.sol";
 import {CambrianRouter} from "../src/CambrianRouter.sol";
 import {ClientBase} from "../src/ClientBase.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import {stdJson} from "forge-std/StdJson.sol";
 
 contract Client is ClientBase, IClient {
     mapping(uint256 => uint8) messages;
@@ -62,38 +64,40 @@ contract Client is ClientBase, IClient {
     }
 }
 
-contract Fixture is Script {
+contract DeployTest is Script {
+    using stdJson for string;
+
     function setUp() public {}
 
     function run() public {
+        string memory chainId = Strings.toString(block.chainid);
+        string memory outputFile = string.concat("./script/output/", chainId, ".json");
+        string memory outputFileJson = vm.readFile(outputFile);
+        address router = outputFileJson.readAddress(".routerProxyAddress");
+
         vm.startBroadcast();
 
-        CambrianRouter router = new CambrianRouter();
-
-        console.log("Router: ", address(router));
-
-        Client client = new Client(address(router));
+        Client client = new Client(router);
 
         console.log("Client: ", address(client));
 
         vm.stopBroadcast();
 
-        string memory objectKey = "root";
+        string memory outputJson = "";
 
-        vm.serializeAddress(objectKey, "client", address(client));
-        vm.serializeAddress(objectKey, "router", address(router));
+        string memory output = vm.serializeAddress(outputJson, "client", address(client));
 
-        string memory output = vm.serializeString(objectKey, "dummy", "");
-
-        vm.writeJson(output, "./out/fixture.json");
+        vm.writeJson(output, string.concat("./script/output/", chainId, ".test.json"));
     }
 }
 
-contract Query is Script {
+contract CallTest is Script {
     Client client;
 
     function setUp() public {
-        address cad = vm.parseJsonAddress(vm.readFile("./out/fixture.json"), ".client");
+        string memory chainId = Strings.toString(block.chainid);
+        string memory outputFile = string.concat("./script/output/", chainId, ".test.json");
+        address cad = vm.parseJsonAddress(vm.readFile(outputFile), ".client");
         client = Client(cad);
     }
 
