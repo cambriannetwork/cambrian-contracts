@@ -21,3 +21,6 @@ broadcast
 
 # Ignore test run outputs
 /script/output/*.test.json
+
+# Soldeer
+/dependencies
