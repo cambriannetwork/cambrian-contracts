@@ -25,29 +25,20 @@ contract Client is ClientBase, IClient {
         int24 tick;
     }
 
-    constructor(
-        address router
-    )
+    constructor(address router)
         ClientBase(
             CambrianRouter(router),
             "name=Swap&network=1&address=88e6a0c2ddd26feeb64f039a2c41296fcb3f5640&signature=c42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67&topic_count=3&data_length=160"
         )
     {}
 
-    function executeQuery(
-        uint64 startBlock,
-        uint64 endBlock
-    ) external returns (uint256) {
+    function executeQuery(uint64 startBlock, uint64 endBlock) external returns (uint256) {
         uint256 messageId = execute(startBlock, endBlock);
         messages[messageId] = 0;
         return messageId;
     }
 
-    function handleSuccess(
-        uint256 messageId,
-        bytes memory data,
-        Log[] calldata logs
-    ) external override {
+    function handleSuccess(uint256 messageId, bytes memory data, Log[] calldata logs) external override {
         Swap[] memory swaps = abi.decode(data, (Swap[]));
         console.log("Swaps: ", swaps.length);
         console.log("Logs: ", logs.length);
@@ -68,11 +59,7 @@ contract Client is ClientBase, IClient {
         token1 += s1;
     }
 
-    function handleStatus(
-        uint256 messageId,
-        uint8 status,
-        string calldata message
-    ) external override {
+    function handleStatus(uint256 messageId, uint8 status, string calldata message) external override {
         messages[messageId] = status;
     }
 }
@@ -84,11 +71,7 @@ contract DeployTest is Script {
 
     function run() public {
         string memory chainId = Strings.toString(block.chainid);
-        string memory outputFile = string.concat(
-            "./script/output/",
-            chainId,
-            ".json"
-        );
+        string memory outputFile = string.concat("./script/output/", chainId, ".json");
         string memory outputFileJson = vm.readFile(outputFile);
         address router = outputFileJson.readAddress(".routerProxyAddress");
 
@@ -102,16 +85,9 @@ contract DeployTest is Script {
 
         string memory outputJson = "";
 
-        string memory output = vm.serializeAddress(
-            outputJson,
-            "client",
-            address(client)
-        );
+        string memory output = vm.serializeAddress(outputJson, "client", address(client));
 
-        vm.writeJson(
-            output,
-            string.concat("./script/output/", chainId, ".test.json")
-        );
+        vm.writeJson(output, string.concat("./script/output/", chainId, ".test.json"));
     }
 }
 
@@ -120,11 +96,7 @@ contract CallTest is Script {
 
     function setUp() public {
         string memory chainId = Strings.toString(block.chainid);
-        string memory outputFile = string.concat(
-            "./script/output/",
-            chainId,
-            ".test.json"
-        );
+        string memory outputFile = string.concat("./script/output/", chainId, ".test.json");
         address cad = vm.parseJsonAddress(vm.readFile(outputFile), ".client");
         client = Client(cad);
     }
