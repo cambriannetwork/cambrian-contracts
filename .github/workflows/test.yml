@@ -36,5 +36,6 @@ jobs:
 
       - name: Run Forge build
         run: |
+          forge soldeer install
           forge build --sizes
         id: build
