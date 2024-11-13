@@ -9,6 +9,11 @@ import {ICambrianClient} from "./interfaces/ICambrianClient.sol";
 contract CambrianClient is ICambrianClient {
     CambrianRouter public router;
 
+    // Status of a query
+    mapping(uint256 => uint8) public status;
+
+    event Status(uint256 indexed messageId, uint8 status, string message);
+
     constructor(CambrianRouter _router) {
         router = _router;
     }
@@ -37,12 +42,16 @@ contract CambrianClient is ICambrianClient {
     }
 
     /**
-     * @notice Handle success response from Cambrian Router
+     * @notice Router callback for success response
      * @param messageId Message ID
      * @param data Response data
      * @param logs Logs
      */
-    function handleSuccess(uint256 messageId, bytes memory data, Log[] calldata logs) external {}
+    function handleSuccess(uint256 messageId, uint256 queryId, bytes memory data, Log[] calldata logs) external {
+        handleStatus(messageId, 1, "Success");
+
+        // TODO: Handle success response with data and logs based on queryId
+    }
 
     /**
      * @notice Handle status response from Cambrian Router
@@ -50,5 +59,9 @@ contract CambrianClient is ICambrianClient {
      * @param status Status
      * @param message Message
      */
-    function handleStatus(uint256 messageId, uint8 status, string calldata message) external {}
+    function handleStatus(uint256 messageId, uint8 status, string calldata message) external {
+        status[messageId] = status;
+
+        emit Status(messageId, status, message);
+    }
 }
